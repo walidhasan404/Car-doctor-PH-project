@@ -23,9 +23,12 @@ const Navbar = () => {
             .catch(error => console.log('Logout failed:', error));
     };
 
-
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
+    };
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen);
     };
 
     const navItems = <>
@@ -61,26 +64,32 @@ const Navbar = () => {
                         <>
                             <div className="relative">
                                 <img
-                                    onClick={toggleDropdown}
+                                    onClick={toggleModal}
                                     className="w-10 h-10 rounded-full cursor-pointer"
                                     src={user.photoURL}
                                     alt={user.displayName}
                                 />
-                                {isDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
-                                        <Link
-                                            to="/profile"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            onClick={() => setIsDropdownOpen(false)}
-                                        >
-                                            Profile
-                                        </Link>
-                                        <button
-                                            onClick={handleLogOut}
-                                            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        >
-                                            Log Out
-                                        </button>
+                                {isModalOpen && (
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                        <div className="bg-white rounded-lg p-6 w-80">
+                                            <div className="text-center mb-4">
+                                                <img className="w-20 h-20 rounded-full mx-auto" src={user.photoURL} alt="User" />
+                                                <h2 className="text-xl font-semibold mt-2">{user.displayName}</h2>
+                                                <p className="text-sm text-gray-500">{user.email}</p>
+                                            </div>
+                                            <button
+                                                onClick={handleLogOut}
+                                                className="btn btn-danger w-full mb-3"
+                                            >
+                                                Log Out
+                                            </button>
+                                            <button
+                                                onClick={toggleModal}
+                                                className="btn btn-secondary w-full"
+                                            >
+                                                Close
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -91,30 +100,6 @@ const Navbar = () => {
                     )}
                 </div>
             </div>
-
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white rounded-lg p-6 w-80">
-                        <div className="text-center mb-4">
-                            <img className="w-20 h-20 rounded-full mx-auto" src={user.photoURL} alt="User" />
-                            <h2 className="text-xl font-semibold mt-2">{user.displayName}</h2>
-                            <p className="text-sm text-gray-500">{user.email}</p>
-                        </div>
-                        <button
-                            onClick={handleLogOut}
-                            className="btn btn-danger w-full mb-3"
-                        >
-                            Log Out
-                        </button>
-                        <button
-                            onClick={() => setIsModalOpen(false)}
-                            className="btn btn-secondary w-full"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };
