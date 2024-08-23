@@ -6,7 +6,7 @@ const CheckOut = () => {
 
     const service = useLoaderData();
     const { title, _id, price, img } = service;
-    const {user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
     const handleCheckOut = event => {
         event.preventDefault();
@@ -22,23 +22,23 @@ const CheckOut = () => {
             img,
             date,
             service: title,
-            service_id : _id,
+            service_id: _id,
             price: price
         }
 
         console.log(booking)
 
-        fetch('http://localhost:5000/bookings', {
+        fetch('https://car-doctor-server-six-wine.vercel.app/bookings', {
             method: 'POST',
             headers: {
-                'content-type' : 'application/json'
+                'content-type': 'application/json'
             },
             body: JSON.stringify(booking)
         })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data)
-        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+            })
     }
 
     return (
@@ -50,7 +50,7 @@ const CheckOut = () => {
                         <label className="label">
                             <span className="label-text">Name</span>
                         </label>
-                        <input type="text" defaultValue={user?.displayName} name="name" className="input input-bordered" />
+                        <input type="text" disabled defaultValue={user?.displayName} name="name" className="input input-bordered" />
                     </div>
                     <div className="form-control">
                         <label className="label">
@@ -62,13 +62,13 @@ const CheckOut = () => {
                         <label className="label">
                             <span className="label-text">Email</span>
                         </label>
-                        <input type="text" name="email" defaultValue={user?.email} placeholder="email" className="input input-bordered" />
+                        <input type="text" name="email" disabled defaultValue={user?.email} placeholder="email" className="input input-bordered" />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text">Due amount</span>
                         </label>
-                        <input type="text" defaultValue={'$' + price} className="input input-bordered" />
+                        <input type="text" disabled defaultValue={'$' + price} className="input input-bordered" />
                     </div>
                 </div>
                 <div className="form-control mt-6">

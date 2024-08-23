@@ -3,38 +3,61 @@ import img from '../../assets/images/login/login.svg'
 import { useContext } from 'react';
 import { AuthContext } from '../../Providers/AuthProvider';
 import axios from 'axios';
+import { FaGoogle } from 'react-icons/fa';
 
 const Login = () => {
 
-    const {signIn} = useContext(AuthContext);
+    const { signIn, googleSignin } = useContext(AuthContext);
     const location = useLocation();
     const navigate = useNavigate();
     console.log(location);
 
-    const handleLogin = event =>{
+    const handleLogin = (event) => {
         event.preventDefault();
         const form = event.target;
-        const name = form.name.value;
         const email = form.email.value;
         const password = form.password.value;
 
         signIn(email, password)
-        .then(result => {
-            const loggedInUser = result.user;
-            console.log(loggedInUser);
-            const user = { email };
-            // navigate(location?.state ? location?.state : '/')
+            .then((result) => {
+                const loggedInUser = result.user;
+                console.log(loggedInUser);
+                const user = { email };
 
-            axios.post('http://localhost:5000/jwt', user, {withCredentials: true})
-            .then(res => {
-                console.log(res.data);
-                if(res.data.success) {
-                    navigate(location?.state ? location?.state : '/')
-                }
+                axios.post('https://car-doctor-server-six-wine.vercel.app/jwt', user, { withCredentials: true })
+                    .then((res) => {
+                        console.log(res.data);
+                        if (res.data.success) {
+                            navigate(location?.state ? location?.state : '/');
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             })
-        })
-        .catch(error => console.log(error))
-    }
+            .catch((error) => {
+                console.log(error);
+                // alert("Invalid email or password. Please try again.");
+            });
+    };
+
+
+    const handleGoogleSignin = async () => {
+        try {
+            const result = await googleSignin();
+            const loggedInUser = result.user;
+
+            const user = { email: loggedInUser.email };
+            const response = await axios.post('https://car-doctor-server-six-wine.vercel.app/jwt', user, { withCredentials: true });
+
+            if (response.data.success) {
+                localStorage.setItem('jwtToken', response.data.token);
+                navigate(location?.state?.from?.pathname || '/', { replace: true });
+            }
+        } catch (error) {
+            console.error('Google Sign-In error:', error);
+        }
+    };
 
     return (
         <div className="hero min-h-screen bg-base-200">
@@ -62,10 +85,13 @@ const Login = () => {
                                 </label>
                             </div>
                             <div className="form-control mt-6">
-                                <input className="btn btn-primary" type="submit" value="Login" />
+                                <input className="btn btn-outline" type="submit" value="Login" />
                             </div>
+                            <button onClick={handleGoogleSignin} className='btn btn-primary  mt-4'>
+                                <strong><FaGoogle className='w-20 text-2xl' /></strong>
+                            </button>
                         </form>
-                        <p className='my-4 text-center'>New to Car Doctors <Link className='text-orange-600 font-bold' to="/signup">Sign Up</Link> </p>
+                        <p className='mb-4 text-center'>New to Car Doctors <Link className='text-orange-600 font-bold' to="/signup">Sign Up</Link> </p>
                     </div>
                 </div>
             </div>

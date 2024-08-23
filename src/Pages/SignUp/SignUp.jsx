@@ -1,11 +1,13 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import img from '../../assets/images/login/login.svg'
 import { useContext } from 'react';
 import { AuthContext } from '../../Providers/AuthProvider';
+import Swal from 'sweetalert2';
 
 const SignUp = () => {
 
     const {createUser} = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSignUp = event =>{
         event.preventDefault();
@@ -17,10 +19,27 @@ const SignUp = () => {
         createUser(email, password)
         .then(result => {
             const user = result.user;
-            console.log(user)
+            console.log(user);
+            Swal.fire({
+                title: 'Success!',
+                text: 'You have successfully signed up!',
+                icon: 'success',
+                confirmButtonText: 'Cool'
+            })
+            .then(() => {
+                navigate('/login');
+            })
         })
-        .catch(error => console.log(error))
-    }
+        .catch(error => {
+            console.error(error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'This email is already registered. Please use a different email.',
+                icon: 'error',
+                confirmButtonText: 'Try Again'
+            });
+        });
+    };
 
     return (
         <div className="hero min-h-screen bg-base-200">
