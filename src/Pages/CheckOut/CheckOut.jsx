@@ -1,12 +1,14 @@
 import { useContext } from "react";
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../Providers/AuthProvider";
+import Swal from "sweetalert2";
 
 const CheckOut = () => {
 
     const service = useLoaderData();
     const { title, _id, price, img } = service;
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleCheckOut = event => {
         event.preventDefault();
@@ -37,9 +39,20 @@ const CheckOut = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
+                console.log(data);
+                if (data.insertedId) {
+                    Swal.fire({
+                        title: 'Booking Confirmed!',
+                        text: 'Your booking has been successfully confirmed.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    navigate('/bookings');
+                }
             })
     }
+
+    const today = new Date().toISOString().split('T')[0];
 
     return (
         <div>
@@ -50,25 +63,25 @@ const CheckOut = () => {
                         <label className="label">
                             <span className="label-text">Name</span>
                         </label>
-                        <input type="text" disabled defaultValue={user?.displayName} name="name" className="input input-bordered" />
+                        <input type="text" readOnly defaultValue={user?.displayName} name="name" className="input input-bordered" />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text">Date</span>
                         </label>
-                        <input type="date" name="date" className="input input-bordered" />
+                        <input type="date" name="date" value={today} readOnly className="input input-bordered" />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text">Email</span>
                         </label>
-                        <input type="text" name="email" disabled defaultValue={user?.email} placeholder="email" className="input input-bordered" />
+                        <input type="text" name="email" readOnly defaultValue={user?.email} placeholder="email" className="input input-bordered" />
                     </div>
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text">Due amount</span>
                         </label>
-                        <input type="text" disabled defaultValue={'$' + price} className="input input-bordered" />
+                        <input type="text" readOnly defaultValue={'$' + price} className="input input-bordered" />
                     </div>
                 </div>
                 <div className="form-control mt-6">
