@@ -27,7 +27,7 @@ To run the project locally, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/car-doctor.git
+   https://github.com/walidhasan404/Car-doctor-PH-project.git
    cd car-doctor
    ```
 
